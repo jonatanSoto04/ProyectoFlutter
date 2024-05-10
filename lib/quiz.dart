@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'QuizActivity.dart';
 import 'QuizModel.dart'; // Asegúrate de importar el modelo de pregunta
 
 class QuizActivity extends StatefulWidget {
@@ -58,7 +59,7 @@ class _QuizActivityState extends State<QuizActivity> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(
-            percentage > 60 ? "Felicidades! Has pasado la prueba" : "Mmm! examen reprobado",
+            percentage > 60 ? "¡Felicidades! Has pasado la prueba" : "¡Mmm! Examen reprobado",
             style: TextStyle(color: percentage > 60 ? Colors.blue : Colors.red),
           ),
           content: Column(
@@ -68,13 +69,16 @@ class _QuizActivityState extends State<QuizActivity> {
                 value: percentage / 100,
               ),
               Text("$percentage%"),
-              Text("$score de $totalQuestions preguntas estan correctas"),
+              Text("$score de $totalQuestions preguntas están correctas"),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Cierra el diálogo
+                Navigator.of(context).pushReplacement( // Reinicia la actividad actual
+                  MaterialPageRoute(builder: (BuildContext context) => MainActivity()),
+                );
               },
               child: Text('Cerrar'),
             ),
