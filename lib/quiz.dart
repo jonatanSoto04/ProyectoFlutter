@@ -19,23 +19,26 @@ class _QuizActivityState extends State<QuizActivity> {
   int currentQuestionIndex = 0;
   String selectedAnswer = "";
   int score = 0;
+  int totalTimeInMillis = 0;
+  bool timeUp = false;
 
   @override
   void initState() {
     super.initState();
+    totalTimeInMillis = int.parse(widget.time) * 60 * 1000;
     startTimer();
   }
 
   void startTimer() {
-    int totalTimeInMillis = int.parse(widget.time) * 60 * 1000;
     Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
         totalTimeInMillis -= 1000;
+        if (totalTimeInMillis <= 0) {
+          timer.cancel();
+          timeUp = true;
+          finishQuiz();
+        }
       });
-      if (totalTimeInMillis <= 0) {
-        timer.cancel();
-        // Finish the quiz
-      }
     });
   }
 
@@ -116,23 +119,29 @@ class _QuizActivityState extends State<QuizActivity> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: widget.questionModelList[currentQuestionIndex].options.map((option) {
-                return ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedAnswer = option;
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: selectedAnswer == option ? Colors.orange : Colors.grey,
-                    padding: EdgeInsets.symmetric(vertical: 12.0),
+                return AnimatedContainer(
+                  duration: Duration(milliseconds: 300),
+                  margin: EdgeInsets.symmetric(vertical: 8.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        selectedAnswer = option;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: selectedAnswer == option ? Colors.orange : Colors.grey,
+                      padding: EdgeInsets.symmetric(vertical: 12.0),
+                    ),
+                    child: Text(option),
                   ),
-                  child: Text(option),
                 );
               }).toList(),
             ),
             SizedBox(height: 16.0),
             ElevatedButton(
-              onPressed: () {
+              onPressed: timeUp
+                  ? null
+                  : () {
                 if (selectedAnswer.isNotEmpty) {
                   setState(() {
                     if (selectedAnswer == widget.questionModelList[currentQuestionIndex].correct) {

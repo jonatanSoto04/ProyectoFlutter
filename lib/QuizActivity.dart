@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'QuizListAdapter.dart';
-import 'QuizModel.dart'; // Asegúrate de importar el modelo de pregunta
+import 'QuizModel.dart';
 
 class MainActivity extends StatefulWidget {
   @override
@@ -10,7 +9,7 @@ class MainActivity extends StatefulWidget {
 
 class _MainActivityState extends State<MainActivity> {
   List<QuizModel> quizModelList = [];
-  late QuizListAdapter adapter;
+  QuizListAdapter? adapter;
 
   @override
   void initState() {
@@ -25,7 +24,7 @@ class _MainActivityState extends State<MainActivity> {
   }
 
   void getDataFromFirebase() {
-    // Datos
+    // Simulando obtener datos de Firebase
     List<QuestionModel> listQuestionModel = [
       QuestionModel(
         question: "Qué es Android",
@@ -48,14 +47,12 @@ class _MainActivityState extends State<MainActivity> {
       quizModelList.add(
         QuizModel(
           id: "1",
-          title:  "Programacion",
+          title: "Programacion",
           subtitle: "Toda la programación básica",
           time: "10",
-          questionList:  listQuestionModel,
+          questionList: listQuestionModel,
         ),
       );
-      /* quizModelList.add(QuizModel("2","Computacion","preguntas sobre informática","20"));
-      quizModelList.add(QuizModel("3","Geografia","Aumente sus conocimientos geográficos","15")); */
     });
 
     setupRecyclerView();
